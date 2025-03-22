@@ -1,0 +1,22 @@
+{
+    "name": "tetloose/tetloose-rest",
+    "type": "wordpress-plugin",
+    "description": "Enhances the WordPress REST API with camelCase keys, ACF Options, and menu endpoints.",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "James Tetley",
+            "email": "tetloose@gmail.com",
+            "homepage": "https://tetloose.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/tetloose/tetloose-rest/issues"
+    },
+    "require": {
+        "php": ">=7.4"
+    },
+    "extra": {
+        "installer-name": "tetloose-rest"
+    }
+}
