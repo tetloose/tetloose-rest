@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Tetloose REST
- * Description: Enhances the WordPress REST API with camelCase keys, ACF Options, and menu endpoints.
+ * Description: Enhances the WordPress REST API with camelCase keys, ACF Fields in REST, ACF Options, and menu endpoints.
  * Author: James Tetley
  * Author URI: https://github.com/tetloose
  * Version: 1.0.0
@@ -13,6 +13,7 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once dirname( __FILE__ ) . '/functions/rest-to-camel-case.php';
+require_once dirname( __FILE__ ) . '/functions/acf-post-fields.php';
 require_once dirname( __FILE__ ) . '/functions/acf-options-page.php';
 require_once dirname( __FILE__ ) . '/functions/register-menu-rest-route.php';
 require_once dirname( __FILE__ ) . '/functions/core-endpoints-to-camel-case.php';

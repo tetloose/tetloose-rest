@@ -15,7 +15,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\expose_acf_options_in_rest' ) ) {
      */
     function expose_acf_options_in_rest() {
         register_rest_route(
-            'acf/v3',
+            'tetloose/v1',
             '/options/',
             array(
                 'methods'  => 'GET',

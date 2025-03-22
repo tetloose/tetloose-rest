@@ -15,7 +15,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\register_menu_in_rest_route' ) ) {
 	 */
 	function register_menu_in_rest_route() {
 		register_rest_route(
-			'acf/v3',
+			'tetloose/v1',
 			'/menu/(?P<id>\d+)',
 			array(
 				'methods'  => 'GET',
