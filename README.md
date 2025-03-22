@@ -39,7 +39,7 @@ ACF fields are attached under the `acf` key, and all keys are camelCased.
 - - ACF page responses (rest_prepare_acf-page)
 - - Custom endpoints (menus, options, etc.)
 
-## 🍔 3. WordPress Menus in REST
+### 🍔 3. WordPress Menus in REST
 
 Registers a custom endpoint to fetch a menu by its ID.
 
@@ -53,7 +53,7 @@ Registers a custom endpoint to fetch a menu by its ID.
 
 Returns the full menu object and its items in camelCase.
 
-## ⚙️ 4. ACF Options Page in REST
+### ⚙️ 4. ACF Options Page in REST
 
 Adds a REST route to fetch ACF fields defined in the Options Page.
 
