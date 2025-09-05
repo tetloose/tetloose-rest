@@ -13,10 +13,26 @@
     "support": {
         "issues": "https://github.com/tetloose/tetloose-rest/issues"
     },
+    "extra": {
+        "installer-name": "tetloose-rest"
+    },
     "require": {
         "php": ">=7.4"
     },
-    "extra": {
-        "installer-name": "tetloose-rest"
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.7.1",
+        "roave/security-advisories": "dev-latest",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
+        "wp-coding-standards/wpcs": "^2.3",
+        "php-stubs/acf-pro-stubs": "^6.0"
+    },
+    "config": {
+        "allow-plugins": {
+        "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "scripts": {
+        "lint": "phpcs",
+        "lint:fix": "phpcbf"
     }
 }

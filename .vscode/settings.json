@@ -1,0 +1,39 @@
+{
+    "phpsab.standard": "${workspaceFolder}/.phpcs.xml",
+    "phpsab.fixerEnable": true,
+    "phpsab.snifferEnable": true,
+    "phpsab.executablePathCS": "vendor/squizlabs/php_codesniffer/bin/phpcs",
+    "phpsab.executablePathCBF": "vendor/squizlabs/php_codesniffer/bin/phpcbf",
+    "intelephense.environment.phpVersion": "7.4.33",
+    "intelephense.stubs": [
+        "wordpress",
+        "Core",
+        "date",
+        "json",
+        "mysqli",
+        "pcre",
+        "Phar",
+        "standard",
+        "zip",
+        "zlib",
+        "zend"
+    ],
+    "intelephense.telemetry.enabled": false,
+    "intelephense.diagnostics.undefinedTypes": false,
+    "intelephense.diagnostics.undefinedProperties": false,
+    "emmet.triggerExpansionOnTab": true,
+    "emmet.includeLanguages": {
+        "php": "html"
+    },
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    },
+    "auto-close-tag.activationOnLanguage": [
+        "php"
+    ],
+    "[php]": {
+        "editor.defaultFormatter": "valeryanm.vscode-phpsab"
+    }
+}

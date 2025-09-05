@@ -8,6 +8,8 @@
  * Plugin URI: https://github.com/tetloose/tetloose-rest
  * License: MIT
  * Requires PHP: ^7.4
+ *
+ * @package Tetloose-Rest
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -17,3 +19,4 @@ require_once dirname( __FILE__ ) . '/functions/acf-post-fields.php';
 require_once dirname( __FILE__ ) . '/functions/acf-options-page.php';
 require_once dirname( __FILE__ ) . '/functions/register-menu-rest-route.php';
 require_once dirname( __FILE__ ) . '/functions/core-endpoints-to-camel-case.php';
+require_once dirname( __FILE__ ) . '/functions/protected-rest.php';

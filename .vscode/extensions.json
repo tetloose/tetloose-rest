@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "editorconfig.editorconfig",
+        "esbenp.prettier-vscode",
+        "valeryanm.vscode-phpsab",
+        "bmewburn.vscode-intelephense-client",
+        "anthonydiametrix.acf-snippet",
+        "Fooxly.workspace"
+    ]
+}
