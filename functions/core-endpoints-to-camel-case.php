@@ -35,6 +35,28 @@ if ( ! function_exists( __NAMESPACE__ . '\\register_core_endpoint_filters' ) ) {
             10,
             3
         );
+
+        add_filter(
+            'rest_prepare_attachment',
+            function ( $response ) {
+                $data = $response->get_data();
+                $response->set_data( wp_rest_to_camel_case( $data ) );
+                return $response;
+            },
+            10,
+            3
+        );
+
+        add_filter(
+            'rest_prepare_acf-attachment',
+            function ( $response ) {
+                $data = $response->get_data();
+                $response->set_data( wp_rest_to_camel_case( $data ) );
+                return $response;
+            },
+            10,
+            3
+        );
     }
 
     add_action( 'rest_api_init', __NAMESPACE__ . '\\register_core_endpoint_filters' );
