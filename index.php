@@ -18,4 +18,4 @@ require_once dirname( __FILE__ ) . '/functions/rest-to-camel-case.php';
 require_once dirname( __FILE__ ) . '/functions/acf-options-page.php';
 require_once dirname( __FILE__ ) . '/functions/register-menu-rest-route.php';
 require_once dirname( __FILE__ ) . '/functions/core-endpoints-to-camel-case.php';
-require_once dirname( __FILE__ ) . '/functions/unlock-endpoint.php';
+require_once dirname( __FILE__ ) . '/functions/password-protected.php';

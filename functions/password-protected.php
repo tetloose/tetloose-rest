@@ -1,17 +1,17 @@
 <?php
 /**
- * Unlock (opaque token) — single-file include
+ * Password Protected (opaque token) — single-file include
  *
- * Provides a REST endpoint to "unlock" password-protected posts/pages/CPTs
+ * Provides a REST endpoint to "password_protected" password-protected posts/pages/CPTs
  * without exposing the plaintext password in storage or responses. On
  * successful verification, an HttpOnly, signed, opaque cookie is set. Later,
  * REST responses are post-processed server-side to mark the resource as
  * unprotected and to inject real content when a valid token is present.
  *
  * Usage (FE flow):
- *  - POST /wp-json/tetloose/v1/unlock   { id|slug|path, [type], password, [ttl] }
+ *  - POST /wp-json/tetloose/v1/password_protected   { id|slug|path, [type], password, [ttl] }
  *  - If { ok: true }, refetch the same REST route; this file will handle
- *    the unlocked state based on the signed cookie (no CORS required for
+ *    the password_protected state based on the signed cookie (no CORS required for
  *    same-origin requests via Next.js rewrites/proxy).
  *
  * Security:
@@ -91,7 +91,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\resolve_post' ) ) {
     }
 }
 
-if ( ! function_exists( __NAMESPACE__ . '\\unlock_signing_key' ) ) {
+if ( ! function_exists( __NAMESPACE__ . '\\password_protected_signing_key' ) ) {
     /**
      * Derive a signing key from WordPress salts.
      *
@@ -102,13 +102,13 @@ if ( ! function_exists( __NAMESPACE__ . '\\unlock_signing_key' ) ) {
      *
      * @return string 32-byte binary key.
      */
-    function unlock_signing_key() : string {
+    function password_protected_signing_key() : string {
         $k = \AUTH_SALT . \SECURE_AUTH_SALT . \LOGGED_IN_SALT . \NONCE_SALT;
         return hash( 'sha256', $k, true ); // 32 bytes (binary).
     }
 }
 
-if ( ! function_exists( __NAMESPACE__ . '\\unlock_sign' ) ) {
+if ( ! function_exists( __NAMESPACE__ . '\\password_protected_sign' ) ) {
     /**
      * Create a signed opaque token from a payload.
      *
@@ -119,15 +119,15 @@ if ( ! function_exists( __NAMESPACE__ . '\\unlock_sign' ) ) {
      * @param array $payload Associative array containing at least 'id' and 'exp'.
      * @return string Signed opaque token.
      */
-    function unlock_sign( array $payload ) : string {
+    function password_protected_sign( array $payload ) : string {
         $body = wp_json_encode( $payload, JSON_UNESCAPED_SLASHES );
-        $sig  = hash_hmac( 'sha256', $body, unlock_signing_key(), true );
+        $sig  = hash_hmac( 'sha256', $body, password_protected_signing_key(), true );
         // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
         return base64_encode( $body ) . '.' . base64_encode( $sig );
     }
 }
 
-if ( ! function_exists( __NAMESPACE__ . '\\unlock_verify' ) ) {
+if ( ! function_exists( __NAMESPACE__ . '\\password_protected_verify' ) ) {
     /**
      * Verify an opaque token and return its decoded payload.
      *
@@ -136,7 +136,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\unlock_verify' ) ) {
      * @param string $token Token string to verify.
      * @return array|null Payload array on success, or null on failure/expiry.
      */
-    function unlock_verify( string $token ) : ?array {
+    function password_protected_verify( string $token ) : ?array {
         $parts = explode( '.', $token, 2 );
         if ( 2 !== count( $parts ) ) {
             return null;
@@ -149,7 +149,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\unlock_verify' ) ) {
             return null;
         }
 
-        $calc = hash_hmac( 'sha256', $body, unlock_signing_key(), true );
+        $calc = hash_hmac( 'sha256', $body, password_protected_signing_key(), true );
         if ( ! hash_equals( $calc, $sig ) ) {
             return null;
         }
@@ -171,23 +171,23 @@ if ( ! function_exists( __NAMESPACE__ . '\\unlock_verify' ) ) {
     }
 }
 
-if ( ! function_exists( __NAMESPACE__ . '\\register_unlock_endpoint' ) ) {
+if ( ! function_exists( __NAMESPACE__ . '\\register_password_protected_endpoint' ) ) {
     /** ───────────────────────────────────────────────────────────────────────────
-     * REST: /unlock — checks password, sets token cookie
+     * REST: /password_protected — checks password, sets token cookie
      * ─────────────────────────────────────────────────────────────────────────── */
 
     /**
-     * Register the unlock REST endpoint.
+     * Register the password_protected REST endpoint.
      *
-     * POST /wp-json/tetloose/v1/unlock
+     * POST /wp-json/tetloose/v1/password_protected
      *
      * @since 1.0.0
      * @return void
      */
-    function register_unlock_endpoint() : void {
+    function register_password_protected_endpoint() : void {
         register_rest_route(
             'tetloose/v1',
-            '/unlock',
+            '/password-protected',
             array(
                 'methods'             => \WP_REST_Server::CREATABLE,
                 'permission_callback' => '__return_true',
@@ -217,23 +217,23 @@ if ( ! function_exists( __NAMESPACE__ . '\\register_unlock_endpoint' ) ) {
                         'required' => false, // seconds; default 10 days.
                     ),
                 ),
-                'callback'            => __NAMESPACE__ . '\\unlock_callback',
+                'callback'            => __NAMESPACE__ . '\\password_protected_callback',
             )
         );
     }
-    add_action( 'rest_api_init', __NAMESPACE__ . '\\register_unlock_endpoint' );
+    add_action( 'rest_api_init', __NAMESPACE__ . '\\register_password_protected_endpoint' );
 }
 
-if ( ! function_exists( __NAMESPACE__ . '\\unlock_callback' ) ) {
+if ( ! function_exists( __NAMESPACE__ . '\\password_protected_callback' ) ) {
     /**
-     * Handle unlock POST, validate password, and set the token cookie.
+     * Handle password_protected POST, validate password, and set the token cookie.
      *
      * @since 1.0.0
      *
      * @param \WP_REST_Request $req Request object.
      * @return \WP_REST_Response|\WP_Error REST response.
      */
-    function unlock_callback( \WP_REST_Request $req ) {
+    function password_protected_callback( \WP_REST_Request $req ) {
         $post = resolve_post(
             array(
                 'id'   => $req['id'],
@@ -273,7 +273,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\unlock_callback' ) ) {
         // Mint a signed token bound to this post ID with an expiry.
         $ttl   = (int) ( $req['ttl'] ?? ( 10 * DAY_IN_SECONDS ) );
         $exp   = time() + max( 60, $ttl ); // Minimum 60 seconds.
-        $token = unlock_sign(
+        $token = password_protected_sign(
             array(
                 'id'  => (int) $post->ID,
                 'exp' => $exp,
@@ -311,13 +311,13 @@ if ( ! function_exists( __NAMESPACE__ . '\\unlock_callback' ) ) {
     }
 }
 
-if ( ! function_exists( __NAMESPACE__ . '\\register_unlock_response_filter' ) ) {
+if ( ! function_exists( __NAMESPACE__ . '\\register_password_protected_response_filter' ) ) {
     /** ───────────────────────────────────────────────────────────────────────────
-     * REST post-process: mark unlocked + inject content when token valid
+     * REST post-process: mark password_protected + inject content when token valid
      * ─────────────────────────────────────────────────────────────────────────── */
 
     /**
-     * Register a REST response filter that marks posts as unlocked and injects the
+     * Register a REST response filter that marks posts as password_protected and injects the
      * real content when a valid token or direct password is provided.
      *
      * Adds a top-level `protected` boolean to the REST payload. When still locked,
@@ -326,7 +326,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\register_unlock_response_filter' ) ) 
      * @since 1.0.0
      * @return void
      */
-    function register_unlock_response_filter() : void {
+    function register_password_protected_response_filter() : void {
 
         $cb = function ( $response, $post, $request ) {
             if ( ! ( $response instanceof \WP_REST_Response ) || ! ( $post instanceof \WP_Post ) ) {
@@ -354,13 +354,13 @@ if ( ! function_exists( __NAMESPACE__ . '\\register_unlock_response_filter' ) ) 
             $valid = false;
 
             if ( $token ) {
-                $payload = unlock_verify( $token );
+                $payload = password_protected_verify( $token );
                 $valid   = ( $payload && (int) $payload['id'] === (int) $post->ID );
             }
 
-            $is_unlocked = ( $match || $valid );
+            $is_password_protected = ( $match || $valid );
 
-            if ( $is_protected && $is_unlocked ) {
+            if ( $is_protected && $is_password_protected ) {
                 $is_protected = false;
 
                 // Inject real content into REST payload (bypasses core gating).
@@ -389,7 +389,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\register_unlock_response_filter' ) ) 
             add_filter( "rest_prepare_{$type}", $cb, 90, 3 );
         }
     }
-    add_action( 'rest_api_init', __NAMESPACE__ . '\\register_unlock_response_filter' );
+    add_action( 'rest_api_init', __NAMESPACE__ . '\\register_password_protected_response_filter' );
 }
 
 /** ───────────────────────────────────────────────────────────────────────────
@@ -407,6 +407,6 @@ if ( ! function_exists( __NAMESPACE__ . '\\register_unlock_response_filter' ) ) 
  * - With Next.js rewrites/proxy, requests are first-party; CORS is not required.
  *
  * - FE flow:
- *     POST /unlock → if { ok: true } then refetch the REST route.
- *     Cookie is HttpOnly & opaque; server decides unlocked/locked here.
+ *     POST /password_protected → if { ok: true } then refetch the REST route.
+ *     Cookie is HttpOnly & opaque; server decides password_protected/locked here.
  */
